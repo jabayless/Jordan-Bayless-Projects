@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RequestTrip.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">tco</a> &gt; <a href="index.source.html" class="el_package">com.tco.requests</a> &gt; <span class="el_source">RequestTrip.java</span></div><h1>RequestTrip.java</h1><pre class="source lang-java linenums">package com.tco.requests;
+
+import com.tco.misc.BadRequestException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import com.tco.misc.ProcessTrip;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+public class RequestTrip extends RequestHeader{
+
+<span class="fc" id="L14">    private final transient Logger log = LoggerFactory.getLogger(RequestTrip.class);</span>
+<span class="fc" id="L15">    private HashMap&lt;String, String&gt; options = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L16">    private ArrayList&lt;HashMap&lt;String, String&gt;&gt; places = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L17">    private ArrayList&lt;Long&gt; distances = new ArrayList&lt;&gt;();</span>
+    // Notes?
+
+<span class="fc" id="L20">    public RequestTrip() {</span>
+<span class="fc" id="L21">        this.requestType = &quot;trip&quot;;</span>
+<span class="fc" id="L22">        this.requestVersion = RequestHeader.CURRENT_SUPPORTED_VERSION;</span>
+<span class="fc" id="L23">    }</span>
+
+    public RequestTrip(HashMap&lt;String, String&gt; options, ArrayList&lt;HashMap&lt;String, String&gt;&gt; places) {
+<span class="fc" id="L26">        this();</span>
+<span class="fc" id="L27">        this.options.put(&quot;earthRadius&quot;, options.get(&quot;earthRadius&quot;));</span>
+<span class="fc" id="L28">        String[] optionalParameters = {&quot;title&quot;, &quot;units&quot;, &quot;response&quot;};</span>
+<span class="fc bfc" id="L29" title="All 2 branches covered.">        for (String currParam : optionalParameters) {</span>
+<span class="fc" id="L30">            String currOption = options.get(currParam);</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">            if (currOption != null) {</span>
+<span class="fc" id="L32">                this.options.put(currParam, options.get(currParam));</span>
+            }
+        }
+<span class="fc" id="L35">        this.places = places;</span>
+<span class="fc" id="L36">    }</span>
+
+    public RequestTrip(HashMap&lt;String, String&gt; options, ArrayList&lt;HashMap&lt;String, String&gt;&gt; places, ArrayList&lt;Long&gt; distances) {
+<span class="fc" id="L39">        this(options, places);</span>
+<span class="fc" id="L40">        this.distances = distances;</span>
+<span class="fc" id="L41">    }</span>
+
+    public void setTitle(String title) {
+<span class="fc" id="L44">        this.options.put(&quot;title&quot;, title);</span>
+<span class="fc" id="L45">    }</span>
+
+    public void setUnits(String units){
+<span class="fc" id="L48">        this.options.put(&quot;units&quot;, units);</span>
+<span class="fc" id="L49">    }</span>
+
+    public void setResponse(String response){
+<span class="fc" id="L52">        this.options.put(&quot;response&quot;, response);</span>
+<span class="fc" id="L53">    }</span>
+
+    public void setEarthRadius(double earthRadius) {
+<span class="fc" id="L56">        this.options.put(&quot;earthRadius&quot;, &quot;&quot; + earthRadius);</span>
+<span class="fc" id="L57">    }</span>
+
+    public String getTitle() {
+<span class="fc" id="L60">        return options.get(&quot;title&quot;);</span>
+    }
+
+    public Double getEarthRadius() {
+<span class="fc" id="L64">        return Double.parseDouble(options.get(&quot;earthRadius&quot;));</span>
+    }
+
+    public String getUnits() {
+<span class="fc" id="L68">        return options.get(&quot;units&quot;);</span>
+    }
+
+    public String getResponse() {
+<span class="fc" id="L72">        return options.get(&quot;response&quot;);</span>
+    }
+
+    public ArrayList&lt;HashMap&lt;String, String&gt;&gt; getPlaces() {
+<span class="fc" id="L76">        return places;</span>
+    }
+
+    public HashMap&lt;String, String&gt; getOptions() {
+<span class="fc" id="L80">        return options;</span>
+    }
+
+    public ArrayList&lt;Long&gt; getDistances() {
+<span class="fc" id="L84">        return distances;</span>
+    }
+
+    @Override
+    public void buildResponse() {
+        // Helper file calls
+<span class="fc" id="L90">        long responseMilliseconds = 100000000; //27 hours</span>
+<span class="pc bpc" id="L91" title="1 of 4 branches missed.">        if(this.getResponse() != null &amp;&amp; !this.getResponse().equals(&quot;0.0&quot;)){</span>
+<span class="fc" id="L92">            double response = Double.parseDouble(this.getResponse());</span>
+<span class="fc" id="L93">            responseMilliseconds = (long)((response * 1000) - 100);//-0.1s to play it safe</span>
+        }
+<span class="fc" id="L95">        ProcessTrip newTrip = new ProcessTrip();</span>
+<span class="fc" id="L96">        long[][] distanceTable = newTrip.createDistanceTable(places, Double.parseDouble(options.get(&quot;earthRadius&quot;)), responseMilliseconds);</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">        if(distanceTable[places.size() - 1][places.size() -1] != -69696969){</span>
+            //if distance table didn't get stopped early, optimize
+<span class="fc" id="L99">            int[] route = newTrip.optimizePlaces(distanceTable, places);</span>
+<span class="fc" id="L100">            places = newTrip.restructureTrip(route, places);</span>
+<span class="fc" id="L101">            distances = newTrip.computeDistancesWTable(distanceTable, route);</span>
+<span class="fc" id="L102">        }</span>
+        else {
+<span class="fc" id="L104">            distances = newTrip.computeDistances(places, Double.parseDouble(options.get(&quot;earthRadius&quot;)));</span>
+        }
+<span class="fc" id="L106">        log.trace(&quot;buildResponse -&gt; {}&quot;, this);</span>
+<span class="fc" id="L107">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

@@ -1,0 +1,9 @@
+com/tco/misc/TestQueryPlaces.class
+com/tco/server/TestWebApplication.class
+com/tco/requests/TestRequestFind.class
+com/tco/misc/TestJSONValidator.class
+com/tco/misc/TestProcessTrip.class
+com/tco/requests/TestRequestTrip.class
+com/tco/requests/TestRequestDistance.class
+com/tco/misc/TestDistanceCalculator.class
+com/tco/requests/TestRequestConfig.class

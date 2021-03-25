@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RequestDistance.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">tco</a> &gt; <a href="index.source.html" class="el_package">com.tco.requests</a> &gt; <span class="el_source">RequestDistance.java</span></div><h1>RequestDistance.java</h1><pre class="source lang-java linenums">package com.tco.requests;
+
+import com.tco.misc.DistanceCalculator;
+import java.util.HashMap;
+
+public class RequestDistance extends RequestHeader {
+
+<span class="fc" id="L8">    protected final static Double KM_EARTH_RADIUS = 6371.0;</span>
+<span class="fc" id="L9">    protected final static Double MI_EARTH_RADIUS = 3959.0;</span>
+<span class="fc" id="L10">    protected final static Double NT_EARTH_RADIUS = 3440.0;</span>
+
+<span class="fc" id="L12">    private HashMap &lt;String,String&gt; place1 = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L13">    private HashMap &lt;String,String&gt; place2 = new HashMap&lt;&gt;();</span>
+
+    private long distance;
+    private Double earthRadius;
+
+    public RequestDistance(){
+<span class="fc" id="L19">        this(KM_EARTH_RADIUS,&quot;0&quot;,&quot;0&quot;,&quot;0&quot;,&quot;0&quot;);</span>
+<span class="fc" id="L20">    }</span>
+
+<span class="fc" id="L22">    public RequestDistance(Double Radius, String Latitude1, String Longitude1, String Latitude2, String Longitude2){</span>
+<span class="fc" id="L23">        this.requestType = &quot;distance&quot;;</span>
+<span class="fc" id="L24">        this.requestVersion = RequestHeader.CURRENT_SUPPORTED_VERSION;</span>
+
+<span class="fc" id="L26">        place1.put(&quot;latitude&quot;, Latitude1);</span>
+<span class="fc" id="L27">        place1.put(&quot;longitude&quot;,Longitude1);</span>
+
+<span class="fc" id="L29">        place2.put(&quot;latitude&quot;, Latitude2);</span>
+<span class="fc" id="L30">        place2.put(&quot;longitude&quot;,Longitude2);</span>
+<span class="fc" id="L31">        earthRadius = Radius;</span>
+<span class="fc" id="L32">    }</span>
+
+    public void setPlace1(HashMap&lt;String, String&gt; place1) {
+<span class="nc" id="L35">        this.place1 = place1;</span>
+<span class="nc" id="L36">    }</span>
+
+    public void setPlace2(HashMap&lt;String, String&gt; place2) {
+<span class="nc" id="L39">        this.place2 = place2;</span>
+<span class="nc" id="L40">    }</span>
+
+    public void setDistance(double distance) {
+<span class="nc" id="L43">        this.distance = (long)distance;</span>
+<span class="nc" id="L44">    }</span>
+
+    public HashMap&lt;String, String&gt; getPlace1() {
+<span class="nc" id="L47">        return place1;</span>
+    }
+
+    public HashMap&lt;String, String&gt; getPlace2() {
+<span class="nc" id="L51">        return place2;</span>
+    }
+
+    public long getDistance() {
+<span class="fc" id="L55">        return distance;</span>
+    }
+
+    public static double getEarthRadius() {
+<span class="nc" id="L59">        return KM_EARTH_RADIUS;</span>
+    }
+
+    @Override
+    public void buildResponse() {
+<span class="fc" id="L64">        DistanceCalculator distanceCalculator = new DistanceCalculator(this.earthRadius);</span>
+<span class="fc" id="L65">        distance = (long)Math.round(distanceCalculator.CalculateSurfaceDistance(place1,place2));</span>
+<span class="fc" id="L66">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

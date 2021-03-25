@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MicroServer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">tco</a> &gt; <a href="index.source.html" class="el_package">com.tco.server</a> &gt; <span class="el_source">MicroServer.java</span></div><h1>MicroServer.java</h1><pre class="source lang-java linenums">package com.tco.server;
+
+import com.tco.misc.BadRequestException;
+import com.tco.misc.JSONValidator;
+import com.tco.misc.DistanceCalculator;
+import com.tco.misc.QueryPlaces;
+
+import com.tco.requests.RequestConfig;
+import com.tco.requests.RequestHeader;
+import com.tco.requests.RequestDistance;
+import com.tco.requests.RequestFind;
+import com.tco.requests.RequestTrip;
+
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.gson.Gson;
+import static spark.Spark.*;
+
+class MicroServer {
+
+<span class="nc" id="L27">  private final Logger log = LoggerFactory.getLogger(MicroServer.class);</span>
+<span class="nc" id="L28">  private DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern(&quot;yyyy/MM/dd HH:mm:ss&quot;);</span>
+
+<span class="nc" id="L30">  private final int HTTP_OK = 200;</span>
+<span class="nc" id="L31">  private final int HTTP_BAD_REQUEST = 400;</span>
+<span class="nc" id="L32">  private final int HTTP_SERVER_ERROR = 500;</span>
+
+<span class="nc" id="L34">  MicroServer(int serverPort) {</span>
+<span class="nc" id="L35">    configureServer(serverPort);</span>
+<span class="nc" id="L36">    processRestfulAPIrequests();</span>
+<span class="nc" id="L37">  }</span>
+
+  /* Configure MicroServices Here. */
+
+  private void processRestfulAPIrequests() {
+<span class="nc" id="L42">    path(&quot;/api&quot;, () -&gt; {</span>
+<span class="nc" id="L43">      before(&quot;/*&quot;, (req, res) -&gt; logRequest(req));</span>
+<span class="nc" id="L44">      post(&quot;/config&quot;, (req, res) -&gt; processHttpRequest(req, res, RequestConfig.class));</span>
+<span class="nc" id="L45">      post(&quot;/distance&quot;, (req, res) -&gt; processHttpRequest(req, res, RequestDistance.class));</span>
+<span class="nc" id="L46">      post(&quot;/find&quot;, (req, res) -&gt; processHttpRequest(req, res, RequestFind.class));</span>
+<span class="nc" id="L47">      post(&quot;/trip&quot;, (req, res) -&gt; processHttpRequest(req, res, RequestTrip.class));</span>
+<span class="nc" id="L48">    });</span>
+<span class="nc" id="L49">  }</span>
+
+  /* You shouldn't need to change what is found below. */
+
+  private String processHttpRequest(spark.Request httpRequest, spark.Response httpResponse, Type type) {
+<span class="nc" id="L54">    setupResponse(httpResponse);</span>
+<span class="nc" id="L55">    String jsonString = httpRequest.body();</span>
+    try {
+<span class="nc" id="L57">      JSONValidator.validate(jsonString, type);</span>
+<span class="nc" id="L58">      return buildJSONResponse(new Gson().fromJson(jsonString, type));</span>
+<span class="nc" id="L59">    } catch (IOException | BadRequestException e) {</span>
+<span class="nc" id="L60">      log.info(&quot;Bad Request - {}&quot;, e.getMessage());</span>
+<span class="nc" id="L61">      httpResponse.status(HTTP_BAD_REQUEST);</span>
+<span class="nc" id="L62">    } catch (Exception e) {</span>
+<span class="nc" id="L63">      log.info(&quot;Server Error - &quot;, e);</span>
+<span class="nc" id="L64">      httpResponse.status(HTTP_SERVER_ERROR);</span>
+<span class="nc" id="L65">    }</span>
+<span class="nc" id="L66">    return jsonString;</span>
+  }
+
+  private void setupResponse(spark.Response response) {
+<span class="nc" id="L70">    response.type(&quot;application/json&quot;);</span>
+<span class="nc" id="L71">    response.header(&quot;Access-Control-Allow-Origin&quot;, &quot;*&quot;);</span>
+<span class="nc" id="L72">    response.header(&quot;Access-Control-Allow-Methods&quot;, &quot;GET,PUT,POST,DELETE,OPTIONS&quot;);</span>
+<span class="nc" id="L73">    response.status(200);</span>
+<span class="nc" id="L74">  }</span>
+
+  private String buildJSONResponse(RequestHeader request) throws BadRequestException {
+<span class="nc" id="L77">    request.buildResponse();</span>
+<span class="nc" id="L78">    String responseBody = new Gson().toJson(request);</span>
+<span class="nc" id="L79">    log.trace(&quot;Response - {}&quot;, responseBody);</span>
+<span class="nc" id="L80">    return responseBody;</span>
+  }
+
+  private void logRequest(spark.Request request) {
+<span class="nc" id="L84">    String message = &quot;Request - &quot;</span>
+<span class="nc" id="L85">            + &quot;[&quot; + dateTimeFormat.format(LocalDateTime.now()) + &quot;] &quot;</span>
+<span class="nc" id="L86">            + request.ip() + &quot; &quot;</span>
+<span class="nc" id="L87">            + &quot;\&quot;&quot; + request.requestMethod() + &quot; &quot;</span>
+<span class="nc" id="L88">            + request.pathInfo() + &quot; &quot;</span>
+<span class="nc" id="L89">            + request.protocol() + &quot;\&quot; &quot;</span>
+<span class="nc" id="L90">            + &quot;[&quot; + request.body() + &quot;]&quot;;</span>
+<span class="nc" id="L91">    log.info(message);</span>
+<span class="nc" id="L92">  }</span>
+
+  private void configureServer(int serverPort) {
+<span class="nc" id="L95">    port(serverPort);</span>
+<span class="nc" id="L96">    String keystoreFile = System.getenv(&quot;KEYSTORE_FILE&quot;);</span>
+<span class="nc" id="L97">    String keystorePassword = System.getenv(&quot;KEYSTORE_PASSWORD&quot;);</span>
+<span class="nc bnc" id="L98" title="All 4 branches missed.">    if (keystoreFile != null &amp;&amp; keystorePassword != null) {</span>
+<span class="nc" id="L99">      secure(keystoreFile, keystorePassword, null, null);</span>
+<span class="nc" id="L100">      log.info(&quot;MicroServer running using HTTPS on port {}.&quot;, serverPort);</span>
+    } else {
+<span class="nc" id="L102">      log.info(&quot;MicroServer running using HTTP on port {}.&quot;, serverPort);</span>
+    }
+
+    // To Serve Static Files (SPA)
+
+<span class="nc" id="L107">    staticFiles.location(&quot;/public/&quot;);</span>
+<span class="nc" id="L108">    redirect.get(&quot;/&quot;, &quot;/index.html&quot;);</span>
+<span class="nc" id="L109">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

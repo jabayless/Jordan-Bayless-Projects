@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QueryPlaces.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">tco</a> &gt; <a href="index.source.html" class="el_package">com.tco.misc</a> &gt; <span class="el_source">QueryPlaces.java</span></div><h1>QueryPlaces.java</h1><pre class="source lang-java linenums">package com.tco.misc;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+public class QueryPlaces {
+
+<span class="fc" id="L13">    private String useTunnel = System.getenv(&quot;CS314_USE_DATABASE_TUNNEL&quot;);</span>
+    // Note that if the variable isn't defined, System.getenv will return null
+    private String dburl;
+<span class="fc" id="L16">    private String isTravis = System.getenv(&quot;TRAVIS&quot;);</span>
+<span class="fc" id="L17">    ArrayList&lt;HashMap&lt;String, String&gt;&gt; resultList = new ArrayList&lt;&gt;();</span>
+    // shared user with read-only access
+<span class="fc" id="L19">    private String username = &quot;cs314-db&quot;;</span>
+<span class="fc" id="L20">    private String password = &quot;eiK5liet1uej&quot;;</span>
+<span class="fc" id="L21">    private int found = 0;</span>
+
+<span class="fc" id="L23">    private String COUNTRY = &quot;SELECT DISTINCT name FROM country ORDER BY name;&quot;;</span>
+<span class="fc" id="L24">    private String SELECT = &quot;SELECT DISTINCT world.name, world.latitude, world.longitude, world.id, world.altitude, world.municipality, world.type,  country.name as country, region.name as region, world.wikipedia_link &quot;;</span>
+<span class="fc" id="L25">    private String JOIN = &quot;FROM (world INNER JOIN region ON world.iso_region = region.id INNER JOIN country ON world.iso_country = country.id) WHERE &quot;;</span>
+
+<span class="fc" id="L27">    public QueryPlaces(){</span>
+<span class="fc" id="L28">        getDB_URL();</span>
+<span class="fc" id="L29">    }</span>
+
+    private void getDB_URL() {
+<span class="pc bpc" id="L32" title="3 of 4 branches missed.">        if (isTravis != null &amp;&amp; isTravis.equals(&quot;true&quot;)) {</span>
+<span class="nc" id="L33">            dburl = &quot;jdbc:mysql://127.0.0.1/cs314&quot;;</span>
+<span class="nc" id="L34">            username = &quot;root&quot;;</span>
+<span class="nc" id="L35">            password = null;</span>
+<span class="pc bpc" id="L36" title="2 of 4 branches missed.">        } else if (useTunnel != null &amp;&amp; useTunnel.equals(&quot;true&quot;)) {</span>
+<span class="fc" id="L37">            dburl = &quot;jdbc:mysql://127.0.0.1:56247/cs314&quot;;</span>
+        } else {
+<span class="nc" id="L39">            dburl = &quot;jdbc:mysql://faure.cs.colostate.edu/cs314&quot;;</span>
+        }
+<span class="fc" id="L41">    }</span>
+
+    private String generateQuery(String match, HashMap&lt;String, List&lt;String&gt;&gt; narrow) {
+        String QUERY;
+<span class="fc" id="L45">        String MATCH = &quot;(country.name LIKE '%&quot; + match + &quot;%' OR region.name LIKE '%&quot; + match + &quot;%' OR world.name LIKE '%&quot; + match + &quot;%' OR world.municipality LIKE '%&quot; + match + &quot;%') ORDER BY world.name;&quot;;</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        if (match == null) {</span>
+<span class="fc" id="L47">            QUERY = &quot;SELECT DISTINCT name, latitude, longitude, id, altitude, municipality, type, iso_region as region, iso_country as country, wikipedia_link FROM world ORDER BY RAND();&quot;;</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        } else if (narrow != null) {</span>
+<span class="fc" id="L49">            List&lt;String&gt; type = narrow.get(&quot;type&quot;);</span>
+<span class="fc" id="L50">            List&lt;String&gt; where = narrow.get(&quot;where&quot;);</span>
+<span class="fc" id="L51">            String TYPE = generateNarrowQuery(type, &quot;world.type&quot;);</span>
+<span class="fc" id="L52">            String WHERE = generateNarrowQuery(where, &quot;country.name&quot;);</span>
+<span class="fc" id="L53">            QUERY = (SELECT + JOIN + TYPE + WHERE + MATCH);</span>
+<span class="fc" id="L54">        } else {</span>
+<span class="fc" id="L55">            QUERY = (SELECT + JOIN + MATCH);</span>
+        }
+<span class="fc" id="L57">        return QUERY;</span>
+    }
+
+    private String generateNarrowQuery(List&lt;String&gt; filters, String columnName) {
+<span class="pc bpc" id="L61" title="2 of 4 branches missed.">        if (filters == null || filters.isEmpty())</span>
+<span class="nc" id="L62">            return &quot;&quot;;</span>
+<span class="fc" id="L63">        String tempQuery = &quot;(&quot;;</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        for (int i = 0; i &lt; filters.size(); i++) {</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">            if (i != 0)</span>
+<span class="fc" id="L66">                tempQuery += &quot; OR &quot;;</span>
+<span class="fc" id="L67">            tempQuery += (columnName + &quot; LIKE '%&quot; + filters.get(i) + &quot;%'&quot;);</span>
+        }
+<span class="fc" id="L69">        tempQuery += &quot;) AND &quot;;</span>
+<span class="fc" id="L70">        return tempQuery;</span>
+    }
+
+    public ArrayList&lt;HashMap&lt;String, String&gt;&gt; placeQuery(String match, HashMap&lt;String, List&lt;String&gt;&gt; narrow, Integer limit) {
+<span class="fc" id="L74">        String QUERY = generateQuery(match, narrow);</span>
+<span class="fc" id="L75">        try (Connection conn = DriverManager.getConnection(dburl, username, password);</span>
+<span class="fc" id="L76">             Statement query = conn.createStatement();</span>
+<span class="fc" id="L77">             ResultSet results = query.executeQuery(QUERY)) {</span>
+<span class="fc bfc" id="L78" title="All 4 branches covered.">            while (results.next() &amp;&amp; found &lt; limit.intValue()) {</span>
+<span class="fc" id="L79">                HashMap&lt;String, String&gt; currPlace = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L80">                currPlace.put(&quot;name&quot;, results.getString(&quot;name&quot;));</span>
+<span class="fc" id="L81">                currPlace.put(&quot;latitude&quot;, results.getString(&quot;latitude&quot;));</span>
+<span class="fc" id="L82">                currPlace.put(&quot;longitude&quot;, results.getString(&quot;longitude&quot;));</span>
+<span class="fc" id="L83">                currPlace.put(&quot;id&quot;, results.getString(&quot;id&quot;));</span>
+<span class="fc" id="L84">                currPlace.put(&quot;altitude&quot;, results.getString(&quot;altitude&quot;));</span>
+<span class="fc" id="L85">                currPlace.put(&quot;municipality&quot;, results.getString(&quot;municipality&quot;));</span>
+<span class="fc" id="L86">                currPlace.put(&quot;type&quot;, results.getString(&quot;type&quot;));</span>
+<span class="fc" id="L87">                currPlace.put(&quot;region&quot;, results.getString(&quot;region&quot;));</span>
+<span class="fc" id="L88">                currPlace.put(&quot;country&quot;, results.getString(&quot;country&quot;));</span>
+<span class="fc" id="L89">                currPlace.put(&quot;url&quot;, results.getString(&quot;wikipedia_link&quot;));</span>
+<span class="fc" id="L90">                resultList.add(currPlace);</span>
+<span class="fc" id="L91">                found++;</span>
+<span class="fc" id="L92">            }</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">            while (results.next()) found++;</span>
+<span class="nc" id="L94">        } catch (Exception e) {</span>
+<span class="nc" id="L95">            System.err.println(&quot;Exception: &quot; + e.getMessage());</span>
+<span class="fc" id="L96">        }</span>
+<span class="fc" id="L97">        return resultList;</span>
+    }
+
+    public List&lt;String&gt; getCountries() {
+<span class="fc" id="L101">        List&lt;String&gt; countries = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L102">        try (Connection conn = DriverManager.getConnection(dburl, username, password);</span>
+<span class="fc" id="L103">             Statement query = conn.createStatement();</span>
+<span class="fc" id="L104">             ResultSet results = query.executeQuery(COUNTRY)) {</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">            while (results.next()) {</span>
+<span class="fc" id="L106">                countries.add(results.getString(&quot;name&quot;));</span>
+            }
+<span class="nc" id="L108">        } catch (Exception e) {</span>
+<span class="nc" id="L109">            System.err.println(&quot;Exception: &quot; + e.getMessage());</span>
+<span class="fc" id="L110">        }</span>
+<span class="fc" id="L111">        return countries;</span>
+    }
+
+    public int getFound(String match, Integer limit) {
+<span class="fc bfc" id="L115" title="All 4 branches covered.">        if (match == null &amp;&amp; limit == null)</span>
+<span class="fc" id="L116">            return 1;</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">        else if (match == null)</span>
+<span class="fc" id="L118">            return limit.intValue();</span>
+        else
+<span class="fc" id="L120">            return found;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

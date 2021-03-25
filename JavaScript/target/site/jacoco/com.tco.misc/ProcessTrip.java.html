@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProcessTrip.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">tco</a> &gt; <a href="index.source.html" class="el_package">com.tco.misc</a> &gt; <span class="el_source">ProcessTrip.java</span></div><h1>ProcessTrip.java</h1><pre class="source lang-java linenums">package com.tco.misc;
+import com.tco.misc.DistanceCalculator;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+<span class="fc" id="L6">public class ProcessTrip{</span>
+
+    private HashMap&lt;String, String&gt; getLocations(HashMap&lt;String, String&gt; place){
+<span class="fc" id="L9">        HashMap&lt;String, String&gt; retPlace = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L10">        retPlace.put(&quot;latitude&quot;, place.get(&quot;latitude&quot;));</span>
+<span class="fc" id="L11">        retPlace.put(&quot;longitude&quot;, place.get(&quot;longitude&quot;));</span>
+<span class="fc" id="L12">        return retPlace;</span>
+    }
+
+    public long[][] createDistanceTable(ArrayList&lt;HashMap&lt;String, String&gt;&gt; places, Double earthRadius, long response)
+    {
+<span class="fc" id="L17">        long start = System.currentTimeMillis();</span>
+<span class="fc" id="L18">        DistanceCalculator distanceCalculator = new DistanceCalculator(earthRadius);</span>
+<span class="fc" id="L19">        long[][] table = new long[places.size()][places.size()];</span>
+        HashMap&lt;String, String&gt; place1;
+        HashMap&lt;String, String&gt; place2;
+<span class="fc bfc" id="L22" title="All 2 branches covered.">        for (int i = 0; i &lt; places.size(); i++) {</span>
+<span class="fc bfc" id="L23" title="All 2 branches covered.">            for (int j = i + 1; j &lt; places.size(); j++) {</span>
+<span class="fc" id="L24">                place1 = getLocations(places.get(i));</span>
+<span class="fc" id="L25">                place2 = getLocations(places.get(j));</span>
+<span class="fc" id="L26">                table[i][j] = (Math.round(distanceCalculator.CalculateSurfaceDistance(place1, place2)));</span>
+<span class="fc" id="L27">                table[j][i] = table[i][j];</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">                if(System.currentTimeMillis() - start &gt; response){</span>
+<span class="fc" id="L29">                    table[places.size()-1][places.size()-1] = -69696969;//indicate failure</span>
+<span class="fc" id="L30">                    break;</span>
+                }
+            }
+<span class="fc bfc" id="L33" title="All 2 branches covered.">            if(System.currentTimeMillis() - start &gt; response){break;}</span>
+        }
+<span class="fc" id="L35">        return table;</span>
+    }
+
+    public int[] optimizePlaces(long[][] distanceTable, ArrayList&lt;HashMap&lt;String, String&gt;&gt; places) {
+<span class="fc" id="L39">        int[] route = new int[places.size()+1];</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        for (int routeDestination = 0; routeDestination &lt; places.size(); routeDestination++)</span>
+        {
+<span class="fc" id="L42">            route[routeDestination] = routeDestination;</span>
+        }
+<span class="fc" id="L44">        route[places.size()] = 0;</span>
+<span class="fc" id="L45">        boolean improvement = true;</span>
+<span class="fc" id="L46">        int n = places.size();</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        if (n &lt;= 3) {</span>
+<span class="fc" id="L48">            improvement = false;</span>
+        }
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        while (improvement) {</span>
+<span class="fc" id="L51">            improvement = false;</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">            for (int i = 0; i &lt;= n - 3; i++) {  // assert n&gt;4</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">                for (int k = i + 2; k &lt;= n - 1; k++) {</span>
+<span class="fc" id="L54">                    long delta = dis(route, i, k, distanceTable);</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">                    if (delta &lt; 0) { //improvement?</span>
+<span class="fc" id="L56">                        twoOptReverse(route, i + 1, k);</span>
+<span class="fc" id="L57">                        improvement = true;</span>
+                    }
+                }
+            }
+        }
+<span class="fc" id="L62">        return route;</span>
+    }
+
+    public long dis(int[] route, int x, int y, long[][] table){
+<span class="fc" id="L66">        return -table[route[x]][route[x+1]]-table[route[y]][route[y+1]]+</span>
+                table[route[x]][route[y]]+table[route[x+1]][route[y+1]];
+    }
+
+    private void twoOptReverse(int[] route, int i1, int k) {
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        while(i1 &lt; k) {</span>
+<span class="fc" id="L72">            int temp = route[i1];</span>
+<span class="fc" id="L73">            route[i1] = route[k];</span>
+<span class="fc" id="L74">            route[k] = temp;</span>
+<span class="fc" id="L75">            i1++;</span>
+<span class="fc" id="L76">            k--;</span>
+<span class="fc" id="L77">        }</span>
+<span class="fc" id="L78">    }</span>
+
+    public ArrayList&lt;HashMap&lt;String, String&gt;&gt; restructureTrip(int[] route, ArrayList&lt;HashMap&lt;String, String&gt;&gt; places){
+<span class="fc" id="L81">        ArrayList&lt;HashMap&lt;String, String&gt;&gt; newPlaces = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">        for (int i = 0; i&lt; places.size(); i++)</span>
+        {
+<span class="fc" id="L84">            newPlaces.add(places.get(route[i]));</span>
+        }
+<span class="fc" id="L86">        return newPlaces;</span>
+    }
+
+    public ArrayList&lt;Long&gt; computeDistances(ArrayList&lt;HashMap&lt;String, String&gt;&gt; places, Double earthRadius){
+<span class="fc" id="L90">        DistanceCalculator distanceCalculator = new DistanceCalculator(earthRadius);</span>
+<span class="fc" id="L91">        ArrayList&lt;Long&gt; distances = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">        for(int i = 0; i &lt; places.size(); i++){</span>
+<span class="fc" id="L93">            HashMap&lt;String, String&gt; place1 = getLocations(places.get(i));</span>
+<span class="fc" id="L94">            HashMap&lt;String, String&gt; place2 = getPlace2(places, i);</span>
+<span class="fc" id="L95">            distances.add(Math.round(distanceCalculator.CalculateSurfaceDistance(place1, place2)));</span>
+        }
+<span class="fc" id="L97">        return distances;</span>
+    }
+
+    public ArrayList&lt;Long&gt; computeDistancesWTable(long[][] table, int[] route){
+<span class="fc" id="L101">        ArrayList&lt;Long&gt; distances = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">        for(int i = 0; i &lt; route.length - 1; i++){</span>
+<span class="fc" id="L103">            distances.add(table[route[i]][route[i+1]]);</span>
+        }
+<span class="fc" id="L105">        return distances;</span>
+    }
+
+    public HashMap&lt;String, String&gt; getPlace2(ArrayList&lt;HashMap&lt;String, String&gt;&gt; places, int i){
+        //logic to compare last place with first
+        HashMap&lt;String, String&gt; place2;
+<span class="fc bfc" id="L111" title="All 2 branches covered.">        if(i == places.size() - 1){</span>
+<span class="fc" id="L112">            place2 = getLocations(places.get(0));</span>
+        }
+        else{
+<span class="fc" id="L115">            place2 = getLocations(places.get(i+1));</span>
+        }
+<span class="fc" id="L117">        return place2;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

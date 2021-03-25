@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RequestConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">tco</a> &gt; <a href="index.source.html" class="el_package">com.tco.requests</a> &gt; <span class="el_source">RequestConfig.java</span></div><h1>RequestConfig.java</h1><pre class="source lang-java linenums">package com.tco.requests;
+
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+
+import com.tco.misc.QueryPlaces;
+import com.tco.misc.BadRequestException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class RequestConfig extends RequestHeader {
+
+<span class="fc" id="L15">    private final transient Logger log = LoggerFactory.getLogger(RequestConfig.class);</span>
+    private String serverName;
+    private List&lt;String&gt; supportedRequests;
+<span class="fc" id="L18">    private HashMap&lt;String, List&lt;String&gt;&gt; filters = new HashMap&lt;&gt;();</span>
+
+<span class="fc" id="L20">    public RequestConfig() {</span>
+<span class="fc" id="L21">        this.requestType = &quot;config&quot;;</span>
+<span class="fc" id="L22">        this.requestVersion = RequestHeader.CURRENT_SUPPORTED_VERSION;</span>
+<span class="fc" id="L23">        this.serverName = &quot;t09 Revenge of the Sprint&quot;;</span>
+<span class="fc" id="L24">        this.supportedRequests = Arrays.asList(&quot;config&quot;, &quot;distance&quot;, &quot;find&quot;, &quot;trip&quot;);</span>
+<span class="fc" id="L25">        this.filters.put(&quot;type&quot;, Arrays.asList(&quot;airport&quot;, &quot;heliport&quot;, &quot;balloonport&quot;));</span>
+<span class="fc" id="L26">    }</span>
+
+    public String getServerName() {
+<span class="fc" id="L29">        return serverName;</span>
+    }
+
+    public List&lt;String&gt; getRequestTypes() {
+<span class="fc" id="L33">        return supportedRequests;</span>
+    }
+
+    public HashMap&lt;String, List&lt;String&gt;&gt; getFilters() {
+<span class="nc" id="L37">        return filters;</span>
+    }
+
+    @Override
+    public void buildResponse() {
+<span class="fc" id="L42">        QueryPlaces results = new QueryPlaces();</span>
+<span class="fc" id="L43">        this.filters.put(&quot;where&quot;, results.getCountries());</span>
+<span class="fc" id="L44">        log.trace(&quot;buildResponse -&gt; {}&quot;, this);</span>
+<span class="fc" id="L45">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

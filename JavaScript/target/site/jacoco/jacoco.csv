@@ -1,0 +1,13 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+tco,com.tco.requests,RequestTrip,0,262,1,9,0,49,1,19,0,15
+tco,com.tco.requests,RequestFind,6,156,0,6,2,50,2,18,2,15
+tco,com.tco.requests,RequestDistance,22,85,0,0,9,20,6,5,6,5
+tco,com.tco.requests,RequestHeader,0,9,0,0,0,3,0,3,0,3
+tco,com.tco.requests,RequestConfig,3,86,0,0,1,15,1,4,1,4
+tco,com.tco.server,WebApplication,26,74,2,8,7,13,3,7,2,3
+tco,com.tco.server,MicroServer,232,0,4,0,57,0,15,0,13,0
+tco,com.tco.misc,DistanceCalculator,5,113,0,2,2,18,1,5,1,4
+tco,com.tco.misc,BadRequestException,3,0,0,0,1,0,1,0,1,0
+tco,com.tco.misc,ProcessTrip,0,389,0,30,0,64,0,25,0,10
+tco,com.tco.misc,QueryPlaces,44,365,7,27,9,71,6,18,0,7
+tco,com.tco.misc,JSONValidator,17,70,0,0,3,13,1,2,1,2

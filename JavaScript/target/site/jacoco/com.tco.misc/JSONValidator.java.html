@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JSONValidator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">tco</a> &gt; <a href="index.source.html" class="el_package">com.tco.misc</a> &gt; <span class="el_source">JSONValidator.java</span></div><h1>JSONValidator.java</h1><pre class="source lang-java linenums">package com.tco.misc;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Type;
+import org.everit.json.schema.SchemaException;
+import org.everit.json.schema.Schema;
+import org.everit.json.schema.loader.SchemaLoader;
+import org.everit.json.schema.ValidationException;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+<span class="nc" id="L15">public class JSONValidator {</span>
+
+  public static void validate(String requestBody, Type requestType) throws IOException {
+<span class="fc" id="L18">    Schema schema = getSchema(requestType.getTypeName());</span>
+    try {
+<span class="fc" id="L20">      JSONObject request = new JSONObject(requestBody);</span>
+<span class="fc" id="L21">      schema.validate(request);</span>
+<span class="fc" id="L22">    } catch (ValidationException e) {</span>
+<span class="fc" id="L23">      throw new IOException(e.getMessage());</span>
+<span class="fc" id="L24">    }</span>
+<span class="fc" id="L25">  }</span>
+
+  private static Schema getSchema(String className) throws IOException {
+<span class="fc" id="L28">    String schemaPath = String.format(&quot;/schemas/%s.json&quot;, className.substring(className.lastIndexOf(&quot;.&quot;) + 1));</span>
+<span class="fc" id="L29">    try (InputStream inputStream = JSONValidator.class.getResourceAsStream(schemaPath)) {</span>
+<span class="fc" id="L30">      JSONObject rawSchema = new JSONObject(new JSONTokener(inputStream));</span>
+<span class="fc" id="L31">      return SchemaLoader.load(rawSchema);</span>
+<span class="fc" id="L32">    } catch (NullPointerException e) {</span>
+<span class="fc" id="L33">      throw new IOException(String.format(&quot;No schema %s exists for type %s&quot;, schemaPath, className));</span>
+<span class="nc" id="L34">    } catch (SchemaException | JSONException e) {</span>
+<span class="nc" id="L35">      throw new IOException(String.format(&quot;Invalid schema format. Root message: %s&quot;, e.getMessage()));</span>
+    }
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
