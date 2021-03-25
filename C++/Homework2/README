@@ -1,0 +1,12 @@
+This folder contains four executables:
+-Starter.c: which spawns the processes needed to test the values from a file that it opens
+to see what type they are.
+-Math.c: which checks if input from command line is a math type character.
+-LowAlpha.c: which checks if input from command line is a letter A-M or a-m
+-HighAlpha.c: which checks if input from command line is a letter N-Z or n-z
+
+1.) The least significant 8 bits are returned from WEXITSTATUS() function
+2.) #include<sys/wait.h>
+3.) The return value from fork for the child process is 0.
+4.) The fork call can fail if no processes can execute because memory is full.
+5.) We are doing sequential processing.

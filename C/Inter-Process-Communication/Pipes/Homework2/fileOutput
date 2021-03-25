@@ -1,0 +1,124 @@
+LowAlpha[3811]: Received coded value 84.
+LowAlpha[3811]: Result is false.
+HighAlpha[3812]: Received coded value 84.
+HighAlpha[3812]: Result is true.
+LowAlpha[3813]: Received coded value 111.
+LowAlpha[3813]: Result is false.
+HighAlpha[3814]: Received coded value 111.
+HighAlpha[3814]: Result is true.
+LowAlpha[3815]: Received coded value 100.
+LowAlpha[3815]: Result is true.
+LowAlpha[3816]: Received coded value 100.
+LowAlpha[3816]: Result is true.
+LowAlpha[3817]: Received coded value 32.
+LowAlpha[3817]: Result is false.
+HighAlpha[3818]: Received coded value 32.
+HighAlpha[3818]: Result is false.
+Math[3819]: Received coded value 32.
+Math[3819]: Result is false.
+LowAlpha[3820]: Received coded value 43.
+LowAlpha[3820]: Result is false.
+HighAlpha[3821]: Received coded value 43.
+HighAlpha[3821]: Result is false.
+Math[3822]: Received coded value 43.
+Math[3822]: Result is true.
+LowAlpha[3823]: Received coded value 32.
+LowAlpha[3823]: Result is false.
+HighAlpha[3824]: Received coded value 32.
+HighAlpha[3824]: Result is false.
+Math[3825]: Received coded value 32.
+Math[3825]: Result is false.
+LowAlpha[3826]: Received coded value 67.
+LowAlpha[3826]: Result is true.
+LowAlpha[3827]: Received coded value 111.
+LowAlpha[3827]: Result is false.
+HighAlpha[3828]: Received coded value 111.
+HighAlpha[3828]: Result is true.
+LowAlpha[3829]: Received coded value 110.
+LowAlpha[3829]: Result is false.
+HighAlpha[3830]: Received coded value 110.
+HighAlpha[3830]: Result is true.
+LowAlpha[3831]: Received coded value 110.
+LowAlpha[3831]: Result is false.
+HighAlpha[3832]: Received coded value 110.
+HighAlpha[3832]: Result is true.
+LowAlpha[3833]: Received coded value 105.
+LowAlpha[3833]: Result is true.
+LowAlpha[3834]: Received coded value 101.
+LowAlpha[3834]: Result is true.
+Starter: Forked process with ID 3811
+Starter: Waiting for process [3811]
+Starter: Child process 3811 returned false.
+Starter: Forked process with ID 3812
+Starter: Waiting for process [3812]
+Starter: Child process 3812 returned true.
+Starter: Forked process with ID 3813
+Starter: Waiting for process [3813]
+Starter: Child process 3813 returned false.
+Starter: Forked process with ID 3814
+Starter: Waiting for process [3814]
+Starter: Child process 3814 returned true.
+Starter: Forked process with ID 3815
+Starter: Waiting for process [3815]
+Starter: Child process 3815 returned true.
+Starter: Forked process with ID 3816
+Starter: Waiting for process [3816]
+Starter: Child process 3816 returned true.
+Starter: Forked process with ID 3817
+Starter: Waiting for process [3817]
+Starter: Child process 3817 returned false.
+Starter: Forked process with ID 3818
+Starter: Waiting for process [3818]
+Starter: Child process 3818 returned false.
+Starter: Forked process with ID 3819
+Starter: Waiting for process [3819]
+Starter: Child process 3819 returned false.
+Starter: Forked process with ID 3820
+Starter: Waiting for process [3820]
+Starter: Child process 3820 returned false.
+Starter: Forked process with ID 3821
+Starter: Waiting for process [3821]
+Starter: Child process 3821 returned false.
+Starter: Forked process with ID 3822
+Starter: Waiting for process [3822]
+Starter: Child process 3822 returned true.
+Starter: Forked process with ID 3823
+Starter: Waiting for process [3823]
+Starter: Child process 3823 returned false.
+Starter: Forked process with ID 3824
+Starter: Waiting for process [3824]
+Starter: Child process 3824 returned false.
+Starter: Forked process with ID 3825
+Starter: Waiting for process [3825]
+Starter: Child process 3825 returned false.
+Starter: Forked process with ID 3826
+Starter: Waiting for process [3826]
+Starter: Child process 3826 returned true.
+Starter: Forked process with ID 3827
+Starter: Waiting for process [3827]
+Starter: Child process 3827 returned false.
+Starter: Forked process with ID 3828
+Starter: Waiting for process [3828]
+Starter: Child process 3828 returned true.
+Starter: Forked process with ID 3829
+Starter: Waiting for process [3829]
+Starter: Child process 3829 returned false.
+Starter: Forked process with ID 3830
+Starter: Waiting for process [3830]
+Starter: Child process 3830 returned true.
+Starter: Forked process with ID 3831
+Starter: Waiting for process [3831]
+Starter: Child process 3831 returned false.
+Starter: Forked process with ID 3832
+Starter: Waiting for process [3832]
+Starter: Child process 3832 returned true.
+Starter: Forked process with ID 3833
+Starter: Waiting for process [3833]
+Starter: Child process 3833 returned true.
+Starter: Forked process with ID 3834
+Starter: Waiting for process [3834]
+Starter: Child process 3834 returned true.
+Low Alpha: 5
+High Alpha: 5
+Math: 1
+Other: 2

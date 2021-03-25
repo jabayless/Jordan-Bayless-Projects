@@ -1,0 +1,19 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "Analyze.c"
+#include <time.h>
+#include <math.h>
+
+int randRange(int high, int low);
+
+int main(){
+srand(time(NULL));
+
+//call getRunning ratio which returns all information
+float running_ratio = get_running_ratio();
+printf("[Invoker] Running ratio: %f\n\n", running_ratio);
+
+//1.) dynamically allocate and deallocate a random sized array for each iteration
+
+return 0;
+}

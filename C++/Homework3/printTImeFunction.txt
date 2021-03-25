@@ -1,0 +1,110 @@
+if opt >= argc){
+read from standard in
+
+else{
+read from file
+
+
+void printTime(char outputType, bool stringReplace, string date,
+		int argc, char *argv[], string toReplace) {
+//get values of date
+	bool isValidDate = false;
+	vector<int> fullDate;
+	bool isOkay = false;
+	//loop through the date to determine the type
+	for(int i = 0 ; i < date.size(); i++){
+        if(date[i] == '-'){
+            cout << "determined to be dash day\n";
+            fullDate = isValidDashDate(date);
+            isOkay = true;
+
+        }
+        else if(date[i] == '.'){
+            cout << "determined to be dot day\n";
+            fullDate = runStandardDate(argv, date);
+            isOkay = true;
+        }
+	}
+	cout << "Is okay is " << isOkay << endl;
+            if(isOkay == false){
+             fullDate = isToday(date);
+             if(fullDate.size() == 0){
+                cout << "determined to not be today" << endl;
+                fullDate = isTomorrow(date);
+                if(fullDate.size() == 0){
+                    cout << "determined to not be tomorrow\n";
+                    fullDate = isYesterday(date);
+                    cout << "ran isYesterday\n";
+                    if(fullDate.size() == 0){
+                        cerr << "Input " << date << " is not of valid format in program " << programName << " system exiting" << endl;
+                        exit(1);
+                    }
+                }
+             }
+        }
+        cout << "date is ";
+    for(int i = 0 ; i < fullDate.size(); i++){
+        cout << fullDate[i] << "\n";
+    }
+	//replace the string at argv with quotes
+	//replace string is the string to use to replace in the time struct
+	cout << "vector size is " << fullDate.size() << "\n";
+
+	//output format is the formatted output for strftime
+    string outputFormat;
+
+	//if the format is dash date or . date or isYesterday etc.
+	cout << "made it to fulldate size\n";
+	if(fullDate.size() != 0){
+            cout << "date is valid\n";
+            if((stringReplace == true) && (outputType == 'i')){
+                cerr << "Both -i and -f format specifiers were provided which are mutually exclusive\n";
+                cerr << "in program " << programName << endl;
+                exit(1);
+            }
+        //now that you're in sure the date is set
+        //check what kind of output you want: normal, ISO standard or string replace
+        if(outputType == 'i'){
+                cout << "setting output format to ISO standard\n";
+                outputFormat = {'%','Y','-','%','m','-','%','d'};
+        }
+        //just print normal output
+        else{
+            cout << "setting normal output\n";
+            outputFormat = "%a %d %b %Y";
+        }
+	}
+            //put the valid day into a time struct and send it to strftime
+            time_t rawtime = time(0);
+            struct tm *myTmp;
+           // myTmp = localtime(&rawtime);
+
+           // cout << "printing the full date \n";
+            for(int i = 0 ; i < fullDate.size(); i++){
+               //cout << fullDate[i] << "\n";
+            }
+
+            //set the time struct
+            myTmp->tm_mday = fullDate[2];
+            myTmp->tm_wday = fullDate[4];
+            myTmp->tm_yday = fullDate[0];
+            myTmp->tm_year = fullDate[3];
+            myTmp->tm_mon = fullDate[1];
+
+	        char buffer[70];
+	        char line[70];
+
+	        if(stringReplace == true){
+                strcpy(line, toReplace.c_str());
+                // cout << "replacing string with:" << toReplace << endl;
+	        }
+	        else{
+                strcpy(line, outputFormat.c_str());
+                //strftime(buffer, 70, "%a %d %b %Y", myTmp);
+	            //cout << "buffer is set to " << buffer << "\n";
+	        }
+
+            strftime(buffer, 70, line, myTmp);
+            //cout << "line is " << line;
+            cout << "\nnow the buffer is " << buffer << "\n\n\n" << endl;
+}

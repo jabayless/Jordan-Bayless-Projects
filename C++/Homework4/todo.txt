@@ -1,0 +1,11 @@
+TODO for HW4
+
+Get add function with template that makes it a variadic function
+
+get operator<< done
+get operator >> done 
+
+throw errors
+divide by 0 errors
+
+-1 in denominator
