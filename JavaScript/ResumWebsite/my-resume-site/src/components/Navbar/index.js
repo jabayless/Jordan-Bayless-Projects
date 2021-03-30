@@ -54,7 +54,7 @@ const Navbar = ({ toggle }) => {
                   exact='true'
                   offset={-80}
                 >
-                  About
+                  My Background
                 </NavLinks>
               </NavItem>
               <NavItem>
@@ -66,7 +66,7 @@ const Navbar = ({ toggle }) => {
                   exact='true'
                   offset={-80}
                 >
-                  Discover
+                  Projects
                 </NavLinks>
               </NavItem>
               <NavItem>
@@ -78,7 +78,7 @@ const Navbar = ({ toggle }) => {
                   exact='true'
                   offset={-80}
                 >
-                  Services
+                  Technologies
                 </NavLinks>
               </NavItem>
               <NavItem>
@@ -90,7 +90,7 @@ const Navbar = ({ toggle }) => {
                   exact='true'
                   offset={-80}
                 >
-                  Sign Up
+                  Contact Me
                 </NavLinks>
               </NavItem>
             </NavMenu>
