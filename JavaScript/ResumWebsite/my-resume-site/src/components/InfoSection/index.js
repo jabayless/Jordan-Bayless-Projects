@@ -61,6 +61,7 @@ const InfoSection = ({
             </Column1>
             <Column2>
               <ImgWrap>
+              <img src="../../CSU-Logo.png" alt="CSU"/>
                 <Img src={img} alt={alt} />
               </ImgWrap>
             </Column2>
