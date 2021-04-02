@@ -11,8 +11,6 @@ import {
   Heading,
   Subtitle,
   BtnWrap,
-  ImgWrap,
-  Img
 } from './InfoElements';
 
 const InfoSection = ({
@@ -23,8 +21,6 @@ const InfoSection = ({
   headline,
   description,
   buttonLabel,
-  img,
-  alt,
   id,
   primary,
   darkText,
@@ -32,6 +28,9 @@ const InfoSection = ({
   dark2
 }) => {
   console.log(primary);
+  var image = document.createElement("img");
+  image.src = '/home/jbayless/GitHub/JavaScript/ResumWebsite/my-resume-site/src/images/CSU-Logo.png';
+  document.body.appendChild(image);
   return (
     <>
       <InfoContainer lightBg={lightBg} id={id}>
@@ -60,9 +59,9 @@ const InfoSection = ({
               </TextWrapper>
             </Column1>
             <Column2>
-              <ImgWrap>
-                <Img src={img} alt={alt} />
-              </ImgWrap>
+            <div>
+              <img src="images/CSU-Logo.png"/>
+            </div> 
             </Column2>
           </InfoRow>
         </InfoWrapper>

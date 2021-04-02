@@ -1,7 +1,4 @@
 import React from 'react';
-import Icon1 from '../../images/svg-1.svg';
-import Icon2 from '../../images/svg-3.svg';
-import Icon3 from '../../images/svg-5.svg';
 import {
   ServicesContainer,
   ServicesH1,
@@ -15,27 +12,35 @@ import {
 const Services = () => {
   return (
     <ServicesContainer id='services'>
-      <ServicesH1>Our Services</ServicesH1>
+      <ServicesH1>Technologies</ServicesH1>
       <ServicesWrapper>
         <ServicesCard>
-          <ServicesIcon src={Icon1} />
-          <ServicesH2>Reduce Expenses</ServicesH2>
+          <ServicesIcon/>
+          <ServicesH2>Systems</ServicesH2>
           <ServicesP>
-            We help reduce your fees and increase your overall revenue.
+            Linux OS (Ubuntu & Linux Redhat), npm, Version Control (Git),
+            Code Repositories (Github & Jira), bitbucket, Automated Builds and Deployments (Travis CI & Jenkins)
           </ServicesP>
         </ServicesCard>
         <ServicesCard>
-          <ServicesIcon src={Icon2} />
-          <ServicesH2>Virtual Offices</ServicesH2>
+          <ServicesIcon/>
+          <ServicesH2>Programming Languages</ServicesH2>
           <ServicesP>
-            You can access our platform online anywhere in the world.
+            C,
+            C++,
+            Java,
+            Python,
+            SQL,
+            ReactJS,
+            Groovy
           </ServicesP>
         </ServicesCard>
         <ServicesCard>
-          <ServicesIcon src={Icon3} />
-          <ServicesH2>Premium Benefits</ServicesH2>
+          <ServicesIcon/>
+          <ServicesH2>Skills</ServicesH2>
           <ServicesP>
-            Unlock our special membership card that returns 5% cash back.
+            Continuous Integration, Programming, Software Engineering, Networking, Security, 
+            Test Driven Development, Agile Development, Kanban boards, Scrum, 
           </ServicesP>
         </ServicesCard>
       </ServicesWrapper>
