@@ -1,0 +1,21 @@
+﻿HW3 Notes
+
+ssh to juneau on school machines
+$HADOOP_HOME/bin/hdfs namenode -format
+$HADOOP_HOME/sbin/start-dfs.sh
+jps
+<check for two lines>
+<namenode and jps>
+
+export HADOOP_CONF_DIR=/s/bach/c/under/jbayless/Desktop/Spring2021/CS455/Homework3/client-config_v2/
+or if already in that directory, type: 
+export HADOOP_CONF_DIR=$(pwd) 
+
+$HADOOP_HOME/bin/hadoop fs -ls /
+
+/home and /temp are output for your program, get data from the /data directory.
+
+Example of how to run command:
+$HADOOP_HOME/bin/hadoop jar msd-analysis.jar cs455.hadoop.msd.AnalysisJob /data/analysis /home/analysis/output
+
+
