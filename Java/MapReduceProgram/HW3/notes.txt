@@ -18,4 +18,6 @@ $HADOOP_HOME/bin/hadoop fs -ls /
 Example of how to run command:
 $HADOOP_HOME/bin/hadoop jar msd-analysis.jar cs455.hadoop.msd.AnalysisJob /data/analysis /home/analysis/output
 
+watch help session 11 & 12
+
 
